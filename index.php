@@ -24,6 +24,7 @@
 	var keypress_count = 0;	
 	var conn = new WebSocket('ws://157.230.181.208:8080');
 	
+	
 	conn.onopen = function(e){
 	
 	    console.log("Connection established!");
