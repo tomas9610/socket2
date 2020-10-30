@@ -22,7 +22,7 @@
 	<script>
 	
 	var keypress_count = 0;	
-	var conn = new WebSocket('ws://157.230.181.208:8080');
+	var conn = new WebSocket('wss://157.230.181.208');
 	
 	
 	conn.onopen = function(e){
