@@ -2,7 +2,6 @@
 
 namespace Guzzle\Http\Message;
 
-use Guzzle\Common\Version;
 use Guzzle\Common\Collection;
 use Guzzle\Http\Message\Header\HeaderCollection;
 use Guzzle\Http\Message\Header\HeaderFactory;
@@ -129,43 +128,25 @@ abstract class AbstractMessage implements MessageInterface
 
     /**
      * @deprecated Use $message->getHeader()->parseParams()
-     * @codeCoverageIgnore
      */
     public function getTokenizedHeader($header, $token = ';')
     {
-        Version::warn(__METHOD__ . ' is deprecated. Use $message->getHeader()->parseParams()');
-        if ($this->hasHeader($header)) {
-            $data = new Collection();
-            foreach ($this->getHeader($header)->parseParams() as $values) {
-                foreach ($values as $key => $value) {
-                    if ($value === '') {
-                        $data->set($data->count(), $key);
-                    } else {
-                        $data->add($key, $value);
-                    }
-                }
-            }
-            return $data;
-        }
+        return null;
     }
 
     /**
      * @deprecated
-     * @codeCoverageIgnore
      */
     public function setTokenizedHeader($header, $data, $token = ';')
     {
-        Version::warn(__METHOD__ . ' is deprecated.');
         return $this;
     }
 
     /**
      * @deprecated
-     * @codeCoverageIgnore
      */
     public function getCacheControlDirective($directive)
     {
-        Version::warn(__METHOD__ . ' is deprecated. Use $message->getHeader(\'Cache-Control\')->getDirective()');
         if (!($header = $this->getHeader('Cache-Control'))) {
             return null;
         }
@@ -175,11 +156,9 @@ abstract class AbstractMessage implements MessageInterface
 
     /**
      * @deprecated
-     * @codeCoverageIgnore
      */
     public function hasCacheControlDirective($directive)
     {
-        Version::warn(__METHOD__ . ' is deprecated. Use $message->getHeader(\'Cache-Control\')->hasDirective()');
         if ($header = $this->getHeader('Cache-Control')) {
             return $header->hasDirective($directive);
         } else {
@@ -189,11 +168,9 @@ abstract class AbstractMessage implements MessageInterface
 
     /**
      * @deprecated
-     * @codeCoverageIgnore
      */
     public function addCacheControlDirective($directive, $value = true)
     {
-        Version::warn(__METHOD__ . ' is deprecated. Use $message->getHeader(\'Cache-Control\')->addDirective()');
         if (!($header = $this->getHeader('Cache-Control'))) {
             $this->addHeader('Cache-Control', '');
             $header = $this->getHeader('Cache-Control');
@@ -206,11 +183,9 @@ abstract class AbstractMessage implements MessageInterface
 
     /**
      * @deprecated
-     * @codeCoverageIgnore
      */
     public function removeCacheControlDirective($directive)
     {
-        Version::warn(__METHOD__ . ' is deprecated. Use $message->getHeader(\'Cache-Control\')->removeDirective()');
         if ($header = $this->getHeader('Cache-Control')) {
             $header->removeDirective($directive);
         }

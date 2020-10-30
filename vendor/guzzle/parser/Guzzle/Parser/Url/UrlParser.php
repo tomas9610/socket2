@@ -2,12 +2,8 @@
 
 namespace Guzzle\Parser\Url;
 
-use Guzzle\Common\Version;
-
 /**
  * Parses URLs into parts using PHP's built-in parse_url() function
- * @deprecated Just use parse_url. UTF-8 characters should be percent encoded anyways.
- * @codeCoverageIgnore
  */
 class UrlParser implements UrlParserInterface
 {
@@ -26,11 +22,6 @@ class UrlParser implements UrlParserInterface
 
     public function parseUrl($url)
     {
-        Version::warn(__CLASS__ . ' is deprecated. Just use parse_url()');
-
-        static $defaults = array('scheme' => null, 'host' => null, 'path' => null, 'port' => null, 'query' => null,
-            'user' => null, 'pass' => null, 'fragment' => null);
-
         $parts = parse_url($url);
 
         // Need to handle query parsing specially for UTF-8 requirements
@@ -43,6 +34,15 @@ class UrlParser implements UrlParserInterface
             }
         }
 
-        return $parts + $defaults;
+        $parts['scheme'] = isset($parts['scheme']) ? $parts['scheme'] : null;
+        $parts['host'] = isset($parts['host']) ? $parts['host'] : null;
+        $parts['path'] = isset($parts['path']) ? $parts['path'] : null;
+        $parts['port'] = isset($parts['port']) ? $parts['port'] : null;
+        $parts['query'] = isset($parts['query']) ? $parts['query'] : null;
+        $parts['user'] = isset($parts['user']) ? $parts['user'] : null;
+        $parts['pass'] = isset($parts['pass']) ? $parts['pass'] : null;
+        $parts['fragment'] = isset($parts['fragment']) ? $parts['fragment'] : null;
+
+        return $parts;
     }
 }

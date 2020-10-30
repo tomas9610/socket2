@@ -2,8 +2,7 @@
 
 namespace Guzzle\Http\Message;
 
-use Guzzle\Common\Version;
-use Guzzle\Common\ToArrayInterface;
+use Guzzle\Common\Collection;
 use Guzzle\Common\Exception\RuntimeException;
 use Guzzle\Http\EntityBodyInterface;
 use Guzzle\Http\EntityBody;
@@ -14,7 +13,7 @@ use Guzzle\Parser\ParserRegistry;
 /**
  * Guzzle HTTP response object
  */
-class Response extends AbstractMessage implements \Serializable
+class Response extends AbstractMessage
 {
     /**
      * @var array Array of reason phrases and their corresponding status codes
@@ -92,11 +91,11 @@ class Response extends AbstractMessage implements \Serializable
     /** @var array Information about the request */
     protected $info = array();
 
+    /** @var array Cacheable response codes (see RFC 2616:13.4) */
+    protected $cacheResponseCodes = array(200, 203, 206, 300, 301, 410);
+
     /** @var string The effective URL that returned this response */
     protected $effectiveUrl;
-
-    /** @var array Cacheable response codes (see RFC 2616:13.4) */
-    protected static $cacheResponseCodes = array(200, 203, 206, 300, 301, 410);
 
     /**
      * Create a new Response based on a raw response message
@@ -130,7 +129,7 @@ class Response extends AbstractMessage implements \Serializable
      * Construct the response
      *
      * @param string                              $statusCode The response status code (e.g. 200, 404, etc)
-     * @param ToArrayInterface|array              $headers    The response headers
+     * @param Collection|array                    $headers    The response headers
      * @param string|resource|EntityBodyInterface $body       The body of the response
      *
      * @throws BadResponseException if an invalid response code is given
@@ -144,7 +143,7 @@ class Response extends AbstractMessage implements \Serializable
         if ($headers) {
             if (is_array($headers)) {
                 $this->setHeaders($headers);
-            } elseif ($headers instanceof ToArrayInterface) {
+            } elseif ($headers instanceof Collection) {
                 $this->setHeaders($headers->toArray());
             } else {
                 throw new BadResponseException('Invalid headers argument received');
@@ -158,21 +157,6 @@ class Response extends AbstractMessage implements \Serializable
     public function __toString()
     {
         return $this->getMessage();
-    }
-
-    public function serialize()
-    {
-        return json_encode(array(
-            'status'  => $this->statusCode,
-            'body'    => (string) $this->body,
-            'headers' => $this->headers->toArray()
-        ));
-    }
-
-    public function unserialize($serialize)
-    {
-        $data = json_decode($serialize, true);
-        $this->__construct($data['status'], $data['headers'], $data['body']);
     }
 
     /**
@@ -762,7 +746,7 @@ class Response extends AbstractMessage implements \Serializable
     public function canCache()
     {
         // Check if the response is cacheable based on the code
-        if (!in_array((int) $this->getStatusCode(), self::$cacheResponseCodes)) {
+        if (!in_array((int) $this->getStatusCode(), $this->cacheResponseCodes)) {
             return false;
         }
 
@@ -865,38 +849,18 @@ class Response extends AbstractMessage implements \Serializable
     }
 
     /**
-     * Parse the XML response body and return a \SimpleXMLElement.
-     *
-     * In order to prevent XXE attacks, this method disables loading external
-     * entities. If you rely on external entities, then you must parse the
-     * XML response manually by accessing the response body directly.
+     * Parse the XML response body and return a SimpleXMLElement
      *
      * @return \SimpleXMLElement
      * @throws RuntimeException if the response body is not in XML format
-     * @link http://websec.io/2012/08/27/Preventing-XXE-in-PHP.html
      */
     public function xml()
     {
-        $errorMessage = null;
-        $internalErrors = libxml_use_internal_errors(true);
-        $disableEntities = libxml_disable_entity_loader(true);
-        libxml_clear_errors();
-
         try {
-            $xml = new \SimpleXMLElement((string) $this->body ?: '<root />', LIBXML_NONET);
-            if ($error = libxml_get_last_error()) {
-                $errorMessage = $error->message;
-            }
+            // Allow XML to be retrieved even if there is no response body
+            $xml = new \SimpleXMLElement((string) $this->body ?: '<root />');
         } catch (\Exception $e) {
-            $errorMessage = $e->getMessage();
-        }
-
-        libxml_clear_errors();
-        libxml_use_internal_errors($internalErrors);
-        libxml_disable_entity_loader($disableEntities);
-
-        if ($errorMessage) {
-            throw new RuntimeException('Unable to parse response body into XML: ' . $errorMessage);
+            throw new RuntimeException('Unable to parse response body into XML: ' . $e->getMessage());
         }
 
         return $xml;
@@ -938,31 +902,25 @@ class Response extends AbstractMessage implements \Serializable
 
     /**
      * @deprecated
-     * @codeCoverageIgnore
      */
     public function getPreviousResponse()
     {
-        Version::warn(__METHOD__ . ' is deprecated. Use the HistoryPlugin.');
         return null;
     }
 
     /**
      * @deprecated
-     * @codeCoverageIgnore
      */
     public function setRequest($request)
     {
-        Version::warn(__METHOD__ . ' is deprecated');
         return $this;
     }
 
     /**
      * @deprecated
-     * @codeCoverageIgnore
      */
     public function getRequest()
     {
-        Version::warn(__METHOD__ . ' is deprecated');
         return null;
     }
 }

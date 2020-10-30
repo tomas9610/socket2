@@ -38,8 +38,6 @@ interface HasDispatcherInterface
      *
      * @param string $eventName Name of the event to dispatch
      * @param array  $context   Context of the event
-     *
-     * @return Event Returns the created event object
      */
     public function dispatch($eventName, array $context = array());
 

@@ -7,6 +7,7 @@ use Guzzle\Http\EntityBodyInterface;
 use Guzzle\Http\QueryString;
 use Guzzle\Http\RedirectPlugin;
 use Guzzle\Http\Exception\RequestException;
+use Guzzle\Http\Mimetypes;
 
 /**
  * HTTP request that sends an entity-body in the request message (POST, PUT, PATCH, DELETE)
@@ -51,7 +52,7 @@ class EntityEnclosingRequest extends Request implements EntityEnclosingRequestIn
             $this->setHeader('Content-Length', 0)->removeHeader('Transfer-Encoding');
         }
 
-        return $this->state;
+        return $this;
     }
 
     public function setBody($body, $contentType = null)
@@ -60,7 +61,7 @@ class EntityEnclosingRequest extends Request implements EntityEnclosingRequestIn
 
         // Auto detect the Content-Type from the path of the request if possible
         if ($contentType === null && !$this->hasHeader('Content-Type')) {
-            $contentType = $this->body->getContentType();
+            $contentType = $this->body->getContentType() ?: Mimetypes::getInstance()->fromFilename($this->getPath());
         }
 
         if ($contentType) {
@@ -180,7 +181,7 @@ class EntityEnclosingRequest extends Request implements EntityEnclosingRequestIn
         return $this;
     }
 
-    public function addPostFile($field, $filename = null, $contentType = null, $postname = null)
+    public function addPostFile($field, $filename = null, $contentType = null)
     {
         $data = null;
 
@@ -196,7 +197,7 @@ class EntityEnclosingRequest extends Request implements EntityEnclosingRequestIn
             throw new RequestException('The path to a file must be a string');
         } elseif (!empty($filename)) {
             // Adding an empty file will cause cURL to error out
-            $data = new PostFile($field, $filename, $contentType, $postname);
+            $data = new PostFile($field, $filename, $contentType);
         }
 
         if ($data) {

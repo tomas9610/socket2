@@ -37,7 +37,7 @@ class AbstractHasDispatcher implements HasDispatcherInterface
 
     public function dispatch($eventName, array $context = array())
     {
-        return $this->getEventDispatcher()->dispatch($eventName, new Event($context));
+        $this->getEventDispatcher()->dispatch($eventName, new Event($context));
     }
 
     public function addSubscriber(EventSubscriberInterface $subscriber)

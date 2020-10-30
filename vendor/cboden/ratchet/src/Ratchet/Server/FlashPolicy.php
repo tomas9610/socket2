@@ -71,18 +71,6 @@ class FlashPolicy implements MessageComponentInterface {
 
         return $this;
     }
-    
-    /**
-     * Removes all domains from the allowed access list.
-     * 
-     * @return \Ratchet\Server\FlashPolicy
-     */
-    public function clearAllowedAccess() {
-        $this->_access      = array();
-        $this->_cacheValid = false;
-
-        return $this;
-    }
 
     /**
      * site-control defines the meta-policy for the current domain. A meta-policy specifies acceptable
@@ -120,7 +108,6 @@ class FlashPolicy implements MessageComponentInterface {
         }
 
         $from->send($this->_cache . "\0");
-        $from->close();
     }
 
     /**

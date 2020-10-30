@@ -8,60 +8,6 @@ CHANGELOG
 
 ---
 
-* 0.3.6 (2017-01-06)
- * BF: Keep host and scheme in HTTP request object attatched to connection
- * BF: Return correct HTTP response (405) when non-GET request made
-
-* 0.3.5 (2016-05-25)
-
- * BF: Unmask responding close frame
- * Added write handler for PHP session serializer
-
-* 0.3.4 (2015-12-23)
-
- * BF: Edge case where version check wasn't run on message coalesce
- * BF: Session didn't start when using pdo_sqlite
- * BF: WAMP currie prefix check when using '#'
- * Compatibility with Symfony 3
-
-* 0.3.3 (2015-05-26)
-
- * BF: Framing bug on large messages upon TCP fragmentation
- * BF: Symfony Router query parameter defaults applied to Request
- * BF: WAMP CURIE on all URIs
- * OriginCheck rules applied to FlashPolicy
- * Switched from PSR-0 to PSR-4
-
-* 0.3.2 (2014-06-08)
-
- * BF: No messages after closing handshake (fixed rare race condition causing 100% CPU)
- * BF: Fixed accidental BC break from v0.3.1
- * Added autoDelete parameter to Topic to destroy when empty of connections
- * Exposed React Socket on IoServer (allowing FlashPolicy shutdown in App)
- * Normalized Exceptions in WAMP
-
-* 0.3.1 (2014-05-26)
-
- * Added query parameter support to Router, set in HTTP request (ws://server?hello=world)
- * HHVM compatibility
- * BF: React/0.4 support; CPU starvation bug fixes
- * BF: Allow App::route to ignore Host header
- * Added expected filters to WAMP Topic broadcast method
- * Resource cleanup in WAMP TopicManager
-
-* 0.3.0 (2013-10-14)
-
- * Added the `App` class to help making Ratchet so easy to use it's silly
- * BC: Require hostname to do HTTP Host header match and do Origin HTTP header check, verify same name by default, helping prevent CSRF attacks
- * Added Symfony/2.2 based HTTP Router component to allowing for a single Ratchet server to handle multiple apps -> Ratchet\Http\Router
- * BC: Decoupled HTTP from WebSocket component -> Ratchet\Http\HttpServer
- * BF: Single sub-protocol selection to conform with RFC6455
- * BF: Sanity checks on WAMP protocol to prevent errors
-
-* 0.2.8 (2013-09-19)
-
- * React 0.3 support
-
 * 0.2.7 (2013-06-09)
 
  * BF: Sub-protocol negotation with Guzzle 3.6
@@ -135,4 +81,4 @@ CHANGELOG
 * 0.1 (2012-05-11)
 
  * First release with components: IoServer, WsServer, SessionProvider, WampServer, FlashPolicy, IpBlackList
- * I/O now handled by React, making Ratchet fully asynchronous
+ * I/O now handled by React, making Ratchet fully asynchronous 

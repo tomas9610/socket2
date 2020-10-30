@@ -27,7 +27,7 @@ class Event extends SymfonyEvent implements ToArrayInterface, \ArrayAccess, \Ite
 
     public function offsetGet($offset)
     {
-        return isset($this->context[$offset]) ? $this->context[$offset] : null;
+        return array_key_exists($offset, $this->context) ? $this->context[$offset] : null;
     }
 
     public function offsetSet($offset, $value)
@@ -37,7 +37,7 @@ class Event extends SymfonyEvent implements ToArrayInterface, \ArrayAccess, \Ite
 
     public function offsetExists($offset)
     {
-        return isset($this->context[$offset]);
+        return array_key_exists($offset, $this->context);
     }
 
     public function offsetUnset($offset)

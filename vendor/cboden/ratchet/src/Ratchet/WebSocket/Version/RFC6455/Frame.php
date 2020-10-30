@@ -347,7 +347,7 @@ class Frame implements FrameInterface {
             $bits += 16;
         }
 
-        // If the value of the initial payload length are is 127 an additional 48 bits are used to describe length
+        // If the value of the initial payload length are is 127 an additional 48 bits are used to describe length 
         // Note: The documentation specifies the length is to be 63 bits, but I think that's a typo and is 64 (16+48)
         if ($check === 127) {
             $bits += 48;
@@ -379,7 +379,6 @@ class Frame implements FrameInterface {
 
         $byte_length = $this->getNumPayloadBytes();
         if ($this->bytesRecvd < 1 + $byte_length) {
-            $this->defPayLen = -1;
             throw new \UnderflowException('Not enough data buffered to determine payload length');
         }
 

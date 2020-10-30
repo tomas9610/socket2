@@ -154,8 +154,6 @@ class RFC6455 implements VersionInterface {
                             return $from->close($frame::CLOSE_BAD_PAYLOAD);
                         }
 
-                        $frame->unMaskPayload();
-
                         return $from->close($frame);
                     break;
                     case $frame::OP_PING:

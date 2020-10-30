@@ -6,7 +6,7 @@ use Ratchet\Wamp\ServerProtocol as WAMP;
 
 /**
  * A ConnectionInterface object wrapper that is passed to your WAMP application
- * representing a client. Methods on this Connection are therefore different.
+ * representing a client. Methods on this Connection are therefore different. 
  * @property \stdClass $WAMP
  */
 class WampConnection extends AbstractConnectionDecorator {
@@ -17,7 +17,7 @@ class WampConnection extends AbstractConnectionDecorator {
         parent::__construct($conn);
 
         $this->WAMP            = new \StdClass;
-        $this->WAMP->sessionId = str_replace('.', '', uniqid(mt_rand(), true));
+        $this->WAMP->sessionId = uniqid();
         $this->WAMP->prefixes  = array();
 
         $this->send(json_encode(array(WAMP::MSG_WELCOME, $this->WAMP->sessionId, 1, \Ratchet\VERSION)));
@@ -26,10 +26,10 @@ class WampConnection extends AbstractConnectionDecorator {
     /**
      * Successfully respond to a call made by the client
      * @param string $id   The unique ID given by the client to respond to
-     * @param array $data an object or array
+     * @param array  $data An array of data to return to the client
      * @return WampConnection
      */
-    public function callResult($id, $data = array()) {
+    public function callResult($id, array $data = array()) {
         return $this->send(json_encode(array(WAMP::MSG_CALL_RESULT, $id, $data)));
     }
 
@@ -81,19 +81,7 @@ class WampConnection extends AbstractConnectionDecorator {
      * @return string
      */
     public function getUri($uri) {
-        $curieSeperator = ':';
-
-        if (preg_match('/http(s*)\:\/\//', $uri) == false) {
-            if (strpos($uri, $curieSeperator) !== false) {
-                list($prefix, $action) = explode($curieSeperator, $uri);
-                
-                if(isset($this->WAMP->prefixes[$prefix]) === true){
-                  return $this->WAMP->prefixes[$prefix] . '#' . $action;
-                }
-            }
-        }
-
-        return $uri;
+        return (array_key_exists($uri, $this->WAMP->prefixes) ? $this->WAMP->prefixes[$uri] : $uri);
     }
 
     /**
@@ -108,8 +96,7 @@ class WampConnection extends AbstractConnectionDecorator {
     /**
      * {@inheritdoc}
      */
-    public function close($opt = null) {
-        $this->getConnection()->close($opt);
+    public function close() {
+        $this->getConnection()->close();
     }
-
 }

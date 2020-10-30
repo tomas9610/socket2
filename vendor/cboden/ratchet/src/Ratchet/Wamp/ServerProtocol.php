@@ -6,7 +6,7 @@ use Ratchet\ConnectionInterface;
 
 /**
  * WebSocket Application Messaging Protocol
- *
+ * 
  * @link http://wamp.ws/spec
  * @link https://github.com/oberstet/AutobahnJS
  *
@@ -79,18 +79,14 @@ class ServerProtocol implements MessageComponentInterface, WsServerInterface {
 
     /**
      * {@inheritdoc}
-     * @throws \Ratchet\Wamp\Exception
-     * @throws \Ratchet\Wamp\JsonException
+     * @throws \Exception
+     * @throws JsonException
      */
     public function onMessage(ConnectionInterface $from, $msg) {
         $from = $this->connections[$from];
 
         if (null === ($json = @json_decode($msg, true))) {
             throw new JsonException;
-        }
-
-        if (!is_array($json) || $json !== array_values($json)) {
-            throw new Exception("Invalid WAMP message format");
         }
 
         switch ($json[0]) {
@@ -107,7 +103,7 @@ class ServerProtocol implements MessageComponentInterface, WsServerInterface {
                     $json = $json[0];
                 }
 
-                $this->_decorating->onCall($from, $callID, $from->getUri($procURI), $json);
+                $this->_decorating->onCall($from, $callID, $procURI, $json);
             break;
 
             case static::MSG_SUBSCRIBE:
@@ -134,7 +130,7 @@ class ServerProtocol implements MessageComponentInterface, WsServerInterface {
             break;
 
             default:
-                throw new Exception('Invalid WAMP message type');
+                throw new Exception('Invalid message type');
         }
     }
 
