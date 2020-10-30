@@ -37,7 +37,7 @@ class Chat implements MessageComponentInterface
        echo sprintf('Connection %d sending message "%s" to %d other connection%s'. "\n"
             , $from->resourceId, $msg, $numRecv, $numRecv == 1 ? '' : 's');
             
-        if($this->saveMessage($msg))
+       /* if($this->saveMessage($msg))
         {
 	        
 	        echo 'Saved message to DB';
@@ -48,7 +48,7 @@ class Chat implements MessageComponentInterface
 	        
 	        echo 'Failed to save message';
 	        
-        }
+        }*/
 
         foreach($this->clients as $client) 
         {
@@ -86,7 +86,7 @@ class Chat implements MessageComponentInterface
     public function saveMessage($msg)
     {
 	    
-		$data = json_decode($msg);
+		/*$data = json_decode($msg);
 		
 		$conversationId = $data->id;
 		$userId = $data->userId;
@@ -136,7 +136,7 @@ class Chat implements MessageComponentInterface
 			
 			return false;
 			
-		}
+		}*/
 	    
     }
     
